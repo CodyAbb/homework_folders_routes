@@ -2,22 +2,35 @@ package com.codeclan.example.FoldersAndFiles.Models;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 
+@Entity
+@Table(name = "folders")
 public class Folder {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(name = "title")
     private String title;
 
+    @JsonIgnoreProperties("folder")
+    @OneToMany(mappedBy = "folder")
     private List<File> files;
+
+    @JsonIgnoreProperties("user")
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    public Folder(String title) {
+    public Folder(String title, User user) {
         this.title = title;
         this.files = new ArrayList<>();
+        this.user = user;
     }
 
     public Folder() {
